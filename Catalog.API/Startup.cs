@@ -23,6 +23,12 @@ public class Startup
     {
         services.AddControllers();
         services.AddApiVersioning();
+
+        services.AddAutoMapper(typeof(Startup));
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Startup).Assembly));
+        services.AddScoped<ICatalogContext, CatalogContext>();
+        services.AddScoped<IProductRepository, ProductRepository>();
+
         services.AddHealthChecks().AddMongoDb(Configuration["DatabaseSettings:ConnectionString"],
           "Catalog Mongo Db Health Checks",
           HealthStatus.Degraded);
@@ -35,11 +41,6 @@ public class Startup
                 Version = "v1",
             }
             ));
-
-        services.AddAutoMapper(typeof(Startup));
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateProductHandler).GetTypeInfo().Assembly));
-        services.AddScoped<ICatalogContext, CatalogContext>();
-        services.AddScoped<IProductRepository, ProductRepository>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

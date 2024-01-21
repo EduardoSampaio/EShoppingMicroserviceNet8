@@ -22,7 +22,7 @@ public class GetDiscountQueryHandler : IRequestHandler<GetDiscountQuery, CouponM
             throw new RpcException(new Status(StatusCode.NotFound,
                 $"Discount with the product name = {request.ProductName} not found"));
         }
-        //TODO: Exercise Follow Product Mapper kind of example
+
         var couponModel = new CouponModel
         {
             Id = coupon.Id,

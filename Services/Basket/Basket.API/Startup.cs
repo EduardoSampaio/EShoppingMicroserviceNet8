@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using Basket.Application;
+using Basket.Application.GrpcService;
 
 namespace Basket.API;
 
@@ -25,6 +26,10 @@ public class Startup(IConfiguration configuration)
         services.AddApplicationService();
         services.AddScoped<IBasketRepository, BasketRepository>();
         services.AddAutoMapper(typeof(Startup));
+        services.AddScoped<DiscountGrpcService>();
+        services.AddScoped<DiscountGrpcService>();
+        services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>
+            (o => o.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]));
         services.AddSwaggerGen(c =>
            c.SwaggerDoc("v1",
            new OpenApiInfo()

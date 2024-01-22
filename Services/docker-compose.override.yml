@@ -67,7 +67,8 @@ services:
     depends_on:
       - discountdb
     ports:
-      - "9002:80"
+      - "9200:80"
+      - "9201:443" 
 
   portainer:
     container_name: portainer

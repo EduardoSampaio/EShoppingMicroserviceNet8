@@ -6,6 +6,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using Basket.Application;
 using Basket.Application.GrpcService;
+using Discount.Grpc.Protos;
 
 namespace Basket.API;
 

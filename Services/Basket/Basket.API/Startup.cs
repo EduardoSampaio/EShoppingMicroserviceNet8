@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using Basket.Application;
 using Basket.Application.GrpcService;
 using Discount.Grpc.Protos;
+using MassTransit;
 
 namespace Basket.API;
 
@@ -42,6 +43,14 @@ public class Startup(IConfiguration configuration)
 
         services.AddHealthChecks()
           .AddRedis(Configuration["CacheSettings:ConnectionString"], "Redis Health", HealthStatus.Degraded);
+
+        services.AddMassTransit(config =>
+        {
+            config.UsingRabbitMq((ct, cfg) =>
+            {
+                cfg.Host(Configuration["EventBusSettings:HostAddress"]);
+            });
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

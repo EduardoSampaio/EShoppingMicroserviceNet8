@@ -5,6 +5,8 @@ using Basket.Application.Mappers;
 using Basket.Application.Queries;
 using Basket.Application.Responses;
 using Basket.Core.Entities;
+using EventBus.Messages.Events;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,12 +17,17 @@ public class BasketController : ApiController
     private readonly IMediator _mediator;
     private readonly ILogger<BasketController> _logger;
     private readonly DiscountGrpcService _discountGrpcService;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public BasketController(IMediator mediator, ILogger<BasketController> logger, DiscountGrpcService discountGrpcService)
+    public BasketController(IMediator mediator, 
+        ILogger<BasketController> logger, 
+        DiscountGrpcService discountGrpcService,
+        IPublishEndpoint publishEndpoint)
     {
         _mediator = mediator;
         _logger = logger;
         _discountGrpcService = discountGrpcService;
+        _publishEndpoint = publishEndpoint;
     }
     
     [HttpGet]
@@ -70,6 +77,9 @@ public class BasketController : ApiController
             return BadRequest();
         }
 
+        var eventMesq = BasketMapper.Mapper.Map<BasketCheckoutEvent>(basketCheckout);
+        eventMesq.TotalPrice = basket.TotalPrice;
+        await _publishEndpoint.Publish(eventMesq);
         //remove the basket
         var deleteQuery = new DeleteBasketByUserNameQuery(basketCheckout.UserName);
         await _mediator.Send(deleteQuery);

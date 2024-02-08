@@ -58,7 +58,6 @@ services:
       - catalogdb
     ports:
       - "9000:80"
-      - "9001:443"  
   
   basket.api:
     container_name: basket.api
@@ -72,8 +71,7 @@ services:
       - basketdb
       - rabbitmq
     ports:
-      - "9100:80"
-      - "9101:443"
+      - "9001:80"
 
   discount.api:
     container_name: discount.api
@@ -85,8 +83,7 @@ services:
     depends_on:
       - discountdb
     ports:
-      - "9200:80"
-      - "9201:443" 
+      - "9002:80" 
 
   ordering.api:
     container_name: ordering.api
@@ -98,8 +95,7 @@ services:
     depends_on:
       - orderdb
     ports:
-      - "9300:80"
-      - "9301:443"
+      - "9003:80"
 
   portainer:
     container_name: portainer

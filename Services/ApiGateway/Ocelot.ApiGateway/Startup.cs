@@ -14,6 +14,7 @@ public class Startup
     {
         services.AddOcelot()
                 .AddCacheManager(x => x.WithDictionaryHandle());
+        services.AddCors();
     }
 
     public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)

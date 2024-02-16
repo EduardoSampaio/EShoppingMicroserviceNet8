@@ -97,6 +97,20 @@ services:
     ports:
       - "9003:80"
 
+  ocelotapigw:
+    container_name: ocelotapigw
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development  
+      - ASPNETCORE_HTTP_PORTS=80 
+    depends_on:
+      - catalog.api
+      - basket.api
+      - discount.api
+      - ordering.api
+    ports:
+      - "9010:80" 
+        
+
   portainer:
     container_name: portainer
     restart: always

@@ -16,6 +16,12 @@ services:
   rabbitmq:
     image: rabbitmq:3-management-alpine
 
+  ocelotapigw:
+    image: ${DOCKER_REGISTRY-}ocelotapigw
+    build:
+      context: .
+      dockerfile: ApiGateway/Ocelot.ApiGateway/Dockerfile
+
   catalog.api:
     image: ${DOCKER_REGISTRY-}catalogapi
     build:

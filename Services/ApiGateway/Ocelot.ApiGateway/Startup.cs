@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,8 +13,16 @@ public class Startup
 {
     public void ConfigureServices(IServiceCollection services)
     {
+        var authScheme = "EShoppingGatewayAuthScheme";
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(authScheme, options =>
+               {
+                   options.Authority = "https://localhost:9009";
+                   options.Audience = "EShoppingGateway";
+               });
+
         services.AddOcelot()
-                .AddCacheManager(x => x.WithDictionaryHandle());
+                    .AddCacheManager(x => x.WithDictionaryHandle());
         services.AddCors();
     }
 

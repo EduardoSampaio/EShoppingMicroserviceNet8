@@ -9,6 +9,9 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using Catalog.Application;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Catalog.API;
 
@@ -45,11 +48,24 @@ public class Startup(IConfiguration configuration)
             }
             ));
 
+        var userPolicy = new AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .Build();
+
+        services.AddControllers(config =>
+        {
+            config.Filters.Add(new AuthorizeFilter(userPolicy));
+        });
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options => 
+            .AddJwtBearer("Bearer", options =>
             {
-                options.Authority = "https.localhost:9009";
+                options.Authority = "https://localhost:9009";
                 options.Audience = "Catalog";
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false
+                };
             });
     }
 
@@ -62,8 +78,11 @@ public class Startup(IConfiguration configuration)
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalog.API v1"));
         }
 
+        app.UseStatusCodePages();
         app.UseRouting();
         app.UseStaticFiles();
+
+        app.UseAuthentication();
         app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {

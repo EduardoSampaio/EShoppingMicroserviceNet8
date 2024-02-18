@@ -3,6 +3,7 @@ using Basket.Application.Responses;
 using Basket.Core.Entities;
 using EventBus.Messages.Events;
 
+
 namespace Basket.Application.Mappers;
 
 public class BasketMappingProfile : Profile

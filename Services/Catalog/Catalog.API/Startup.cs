@@ -8,6 +8,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using Catalog.Application;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Catalog.API;
 
@@ -43,6 +44,13 @@ public class Startup(IConfiguration configuration)
                 Version = "v1",
             }
             ));
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options => 
+            {
+                options.Authority = "https.localhost:9009";
+                options.Audience = "Catalog";
+            });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
